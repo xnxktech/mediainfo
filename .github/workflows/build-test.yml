@@ -28,44 +28,41 @@ on: # rebuild any PRs and main branch changes
 
 env:
   TENCENTCLOUD_SECRET_ID: ${{ secrets.TENCENTCLOUD_SECRET_ID }}
-  TENCENTCLOUD_SECRET_KEY: ${{ secrets.TENCENTCLOUD_SECRET_KEY}}
+  TENCENTCLOUD_SECRET_KEY: ${{ secrets.TENCENTCLOUD_SECRET_KEY }}
 
 jobs:
-  build: # make sure build/ci work properly
-    name: 'Build'
+  build:
+    name: 'Build Test'
+    needs: [ 'tests' ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node: [ '12.16' ]
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-          ref: ${{ github.head_ref }}
-
+      - uses: actions/checkout@v2.3.4
       - name: Setup Node ${{ matrix.node }}
         uses: actions/setup-node@v2.1.5
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.6
+        id: node-modules-cache
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
+          path: |
+            node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - run: rm -f .yarnclean
-      - run: yarn --frozen-lockfile
+            ${{ runner.os }}-yarn
+      - name: Install package.json dependencies with Yarn
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: yarn --frozen-lockfile
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           HUSKY_SKIP_INSTALL: true
 
-      - run: yarn
-      - run: yarn build
+      - name: Build test
+        run: yarn build
+
 
   eslint:
     name: 'Eslint'
@@ -74,59 +71,61 @@ jobs:
       matrix:
         node: [ '12.16' ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: 1
+
       - name: Setup Node ${{ matrix.node }}
         uses: actions/setup-node@v2.1.5
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.6
+        id: node-modules-cache
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
+          path: |
+            node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - run: rm -f .yarnclean
-      - run: yarn --frozen-lockfile
+            ${{ runner.os }}-yarn
+      - name: Install package.json dependencies with Yarn
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: yarn --frozen-lockfile
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           HUSKY_SKIP_INSTALL: true
 
-      - run: yarn
-      - run: yarn lint
+      - name: Check with eslint
+        run: yarn lint
 
   tests:
     name: 'Tests'
+    needs: [ 'eslint' ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node: [ '12.16' ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Setup Node ${{ matrix.node }}
         uses: actions/setup-node@v2.1.5
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.6
+        id: node-modules-cache
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
+          path: |
+            node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - run: rm -f .yarnclean
-      - run: yarn --frozen-lockfile
+            ${{ runner.os }}-yarn
+      - name: Install package.json dependencies with Yarn
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: yarn --frozen-lockfile
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           HUSKY_SKIP_INSTALL: true
 
-      - run: yarn
-      - run: yarn test --coverage
+      - name: Unit tests
+        run: yarn test --coverage
