@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Setup Node ${{ matrix.node }}
-        uses: actions/setup-node@v2.2.0
+        uses: actions/setup-node@v2.3.0
         with:
           node-version: ${{ matrix.node }}
 
@@ -76,7 +76,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node ${{ matrix.node }}
-        uses: actions/setup-node@v2.2.0
+        uses: actions/setup-node@v2.3.0
         with:
           node-version: ${{ matrix.node }}
 
@@ -108,7 +108,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Setup Node ${{ matrix.node }}
-        uses: actions/setup-node@v2.2.0
+        uses: actions/setup-node@v2.3.0
         with:
           node-version: ${{ matrix.node }}
 
