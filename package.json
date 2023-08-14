@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/United-Music/koa-template#readme",
   "dependencies": {
-    "@sentry/node": "^6.0.0",
+    "@sentry/node": "^7.63.0",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-json": "^2.0.2",
