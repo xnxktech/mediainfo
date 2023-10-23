@@ -814,9 +814,9 @@
     "@types/koa" "*"
 
 "@types/koa-json@^2.0.18":
-  version "2.0.21"
-  resolved "https://registry.yarnpkg.com/@types/koa-json/-/koa-json-2.0.21.tgz#89ed74907cd5ac90007b11df85431a6229625a93"
-  integrity sha512-739zYb0TaSdWPs8OAY7kMbefF4JaBj9LeAMJb/veFRp9Sol1Siq7Vw/WjSwMkyxlG48sgELr8gzVfM3bytvLxQ==
+  version "2.0.22"
+  resolved "https://registry.yarnpkg.com/@types/koa-json/-/koa-json-2.0.22.tgz#c022713cf956b344158fe31cf4d041b194c63a5f"
+  integrity sha512-qKJTbG2yDsEtGkAn9wpZflb9O4SUjGkDq+iupApPb2L9g4zBvP1bsqFP0qZsQ+XSG8xtDGD0ifqdiUncxZOsmw==
   dependencies:
     "@types/koa" "*"
 
